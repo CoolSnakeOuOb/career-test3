@@ -14,6 +14,14 @@ const jobDescription = document.getElementById('job-description');
 const retryBtn = document.getElementById('retry-btn');
 const jobLinkBtn = document.getElementById('job-link-btn');
 
+// 進度條
+const progressBar = document.createElement('div');
+progressBar.id = 'progress-bar';
+const progressFill = document.createElement('div');
+progressFill.id = 'progress-fill';
+progressBar.appendChild(progressFill);
+questionPage.prepend(progressBar)
+
 // 題目資料
 const questions = [
     {
@@ -127,6 +135,12 @@ startBtn.addEventListener('click', () => {
     showQuestion();
 });
 
+function updateProgressBar() {
+    const percent = ((currentQuestionIndex + 1) / questions.length) * 100;
+
+    progressFill.style.width = `${percent}%`;
+}
+
 function showQuestion() {
     questionNumber.textContent = `問題 ${currentQuestionIndex + 1} / 共 ${questions.length} 題`;
     questionText.textContent = questions[currentQuestionIndex].text;
@@ -154,6 +168,7 @@ nextBtn.addEventListener('click', () => {
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
         showQuestion();
+        updateProgressBar();  // ← 要加這一行！
     } else {
         showResult();
     }
@@ -221,6 +236,9 @@ function recommendJob(mbti) {
 retryBtn.addEventListener('click', () => {
     resultPage.classList.add('hidden');
     startPage.classList.remove('hidden');
+    progressFill.style.width = '0%';
+    questionNumber.textContent = '';
+    questionText.textContent = '';
     currentQuestionIndex = 0;
     userAnswers = [];
     nextBtn.classList.remove('hidden');
