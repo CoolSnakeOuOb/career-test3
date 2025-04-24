@@ -121,32 +121,28 @@ const questions = [
 let currentQuestionIndex = 0;
 let userAnswers = [];
 
-// 開始測驗
 startBtn.addEventListener('click', () => {
     startPage.classList.add('hidden');
     questionPage.classList.remove('hidden');
     showQuestion();
 });
 
-// 顯示題目
 function showQuestion() {
     questionNumber.textContent = `問題 ${currentQuestionIndex + 1} / 共 ${questions.length} 題`;
     questionText.textContent = questions[currentQuestionIndex].text;
-    options.forEach((option, index) => {
-        option.textContent = questions[currentQuestionIndex].options[index];
-        option.addEventListener('click', () => selectAnswer(index));
-    });
-
-    // 判斷是否為最後一題，並更新按鈕文字
-    if (currentQuestionIndex === questions.length - 1) {
-        nextBtn.textContent = '看結果';
-    } else {
-        nextBtn.textContent = '下一題';
-    }
+    updateOptions();
     nextBtn.classList.add('hidden');
+    nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? '看結果' : '下一題';
 }
 
-// 選擇答案
+function updateOptions() {
+    options.forEach((option, index) => {
+        option.textContent = questions[currentQuestionIndex].options[index];
+        option.onclick = () => selectAnswer(index); // ✅ 用 onclick 取代 addEventListener 累積問題
+        option.classList.remove('selected');
+    });
+}
+
 function selectAnswer(selectedIndex) {
     userAnswers.push(questions[currentQuestionIndex].dimensions[selectedIndex]);
     options.forEach(option => option.classList.remove('selected'));
@@ -154,45 +150,32 @@ function selectAnswer(selectedIndex) {
     nextBtn.classList.remove('hidden');
 }
 
-// 下一題
 nextBtn.addEventListener('click', () => {
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
         showQuestion();
-        nextBtn.classList.add('hidden');
-        options.forEach(option => option.classList.remove('selected'));
     } else {
-        // 最後一題
         showResult();
     }
 });
 
-// 顯示結果
 function showResult() {
     questionPage.classList.add('hidden');
     resultPage.classList.remove('hidden');
-
     const calculatedMBTI = calculateMBTI();
     mbtiType.textContent = calculatedMBTI;
-
     recommendJob(calculatedMBTI);
 }
 
-// 計算 MBTI 類型
 function calculateMBTI() {
     let counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-
-    userAnswers.forEach(answer => {
-        counts[answer]++;
-    });
-
-    let result = '';
-    result += counts['E'] >= counts['I'] ? 'E' : 'I';
-    result += counts['S'] >= counts['N'] ? 'S' : 'N';
-    result += counts['T'] >= counts['F'] ? 'T' : 'F';
-    result += counts['J'] >= counts['P'] ? 'J' : 'P';
-
-    return result;
+    userAnswers.forEach(answer => counts[answer]++);
+    return (
+        (counts.E >= counts.I ? 'E' : 'I') +
+        (counts.S >= counts.N ? 'S' : 'N') +
+        (counts.T >= counts.F ? 'T' : 'F') +
+        (counts.J >= counts.P ? 'J' : 'P')
+    );
 }
 
 // 推薦職缺
@@ -238,24 +221,15 @@ function recommendJob(mbti) {
 retryBtn.addEventListener('click', () => {
     resultPage.classList.add('hidden');
     startPage.classList.remove('hidden');
-
-    // 重置測驗相關變數
     currentQuestionIndex = 0;
     userAnswers = [];
-
-    // 新增：移除所有選項按鈕的 selected 類別
-    options.forEach(option => option.classList.remove('selected'));
-
-    // 新增：重新顯示下一題按鈕 (如果之前被隱藏)
     nextBtn.classList.remove('hidden');
 });
 
-// 相關職缺 (需要根據你的實際情況修改)
 jobLinkBtn.addEventListener('click', () => {
     alert('此處應連結到相關職缺頁面');
-    // 你可以使用 window.open() 或 window.location.href 來導向到相關職缺頁面
-    // 例如： window.location.href = '/career';
 });
+
 
 function wrapTitle(titleElement, maxWidth) {
     if (window.innerWidth <= maxWidth) {
