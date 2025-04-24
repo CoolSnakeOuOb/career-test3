@@ -248,3 +248,24 @@ jobLinkBtn.addEventListener('click', () => {
     // 你可以使用 window.open() 或 window.location.href 來導向到相關職缺頁面
     // 例如： window.location.href = '/career';
 });
+
+function wrapTitle(titleElement, maxWidth) {
+    if (window.innerWidth <= maxWidth) {
+        let titleText = titleElement.textContent;
+        let words = titleText.split(' ');
+        if (words.length > 2) {
+            let middle = Math.floor(words.length / 2);
+            let newTitle = words.slice(0, middle).join(' ') + '<br>' + words.slice(middle).join(' ');
+            titleElement.innerHTML = newTitle;
+        }
+    } else {
+        titleElement.innerHTML = titleElement.textContent; // 恢復原始標題
+    }
+}
+
+let title = document.querySelector('header h1'); // 你的標題元素
+wrapTitle(title, 600); // 在手機螢幕寬度下執行
+
+window.addEventListener('resize', function() {
+    wrapTitle(title, 600); // 在視窗大小改變時重新執行
+});
