@@ -136,6 +136,13 @@ function showQuestion() {
         option.textContent = questions[currentQuestionIndex].options[index];
         option.addEventListener('click', () => selectAnswer(index));
     });
+
+    // 判斷是否為最後一題，並更新按鈕文字
+    if (currentQuestionIndex === questions.length - 1) {
+        nextBtn.textContent = '看結果';
+    } else {
+        nextBtn.textContent = '下一題';
+    }
     nextBtn.classList.add('hidden');
 }
 
@@ -155,6 +162,7 @@ nextBtn.addEventListener('click', () => {
         nextBtn.classList.add('hidden');
         options.forEach(option => option.classList.remove('selected'));
     } else {
+        // 最後一題
         showResult();
     }
 });
