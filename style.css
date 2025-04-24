@@ -14,8 +14,8 @@ body {
 }
 
 header {
-    background: #191970; /* 深藍色 header */
-    color: white; /* 白色標題 */
+    background: #191970;
+    color: white;
     padding: 1em 0;
     text-align: center;
 }
@@ -49,19 +49,26 @@ main {
     margin-bottom: 1em;
 }
 
+#question-text {
+    font-size: 1em;
+}
+
 .option {
-    background-color: #4682b4; /* 藍色選項 */
+    background-color: #4682b4;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    color: white; /* 白色文字 */
+    color: white;
     width: 100%;
     height: 3em;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.9em;
 }
 
 .option:hover {
@@ -69,7 +76,7 @@ main {
 }
 
 button {
-    background-color: #191970; /* 深藍色按鈕 */
+    background-color: #191970;
     color: white;
     border: none;
     padding: 0.75em 1.5em;
@@ -87,7 +94,7 @@ button:hover {
 footer {
     text-align: center;
     padding: 1em 0;
-    background: #191970; /* 深藍色 footer */
+    background: #191970;
     color: white;
     position: fixed;
     bottom: 0;
@@ -109,7 +116,7 @@ footer {
 
 #retry-btn,
 #job-link-btn {
-    background-color: #191970; /* 深藍色按鈕 */
+    background-color: #191970;
     color: white;
     border: none;
     padding: 0.75em 1.5em;
@@ -121,4 +128,25 @@ footer {
 #retry-btn:hover,
 #job-link-btn:hover {
     background-color: #0d0d60;
+}
+
+/* 手機螢幕 */
+@media screen and (max-width: 600px) {
+    #question-text {
+        font-size: 0.9em;
+    }
+
+    .option {
+        font-size: 0.8em;
+        height: auto;
+        min-height: 3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25em;
+    }
+
+    .options {
+        grid-template-columns: 1fr;
+    }
 }
