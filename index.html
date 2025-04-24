@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>適性測驗</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>適性測驗 - 找到最適合你的職務</h1>
+        </header>
+
+        <main>
+            <section id="start-page">
+                <h2>歡迎來到適性測驗</h2>
+                <p>透過這個測驗，我們將幫助你找到最符合你人格特質的職務。</p>
+                <button id="start-btn">開始測驗</button>
+            </section>
+
+            <section id="question-page" class="hidden">
+                <div class="question-container">
+                    <h3 id="question-number">問題 1 / 共 10 題</h3>
+                    <p id="question-text">請選擇一個最符合你的描述：</p>
+                    <div class="options">
+                        <button class="option">選項 A</button>
+                        <button class="option">選項 B</button>
+                        <button class="option">選項 C</button>
+                        <button class="option">選項 D</button>
+                    </div>
+                    <button id="next-btn">下一題</button>
+                </div>
+            </section>
+
+            <section id="result-page" class="hidden">
+              <h2>測驗結果</h2>
+              <p>你的MBTI類型是：<span id="mbti-type"></span></p>
+              <div id="job-recommendation">
+                  <h3>推薦職缺：</h3>
+                  <p id="job-title"></p>
+                  <p id="job-description"></p>
+              </div>
+              <div class="result-buttons">  <button id="retry-btn">再次測驗</button>
+                  <button id="job-link-btn">相關職缺</button>
+              </div>
+          </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 適性測驗網站</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
