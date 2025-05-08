@@ -1,8 +1,8 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
     margin: 0;
     padding-bottom: 3em;
-    background-color: #f0f8ff;
+    background-color: #f0f0f0; /* 淺灰色背景 */
     min-height: 100vh;
     position: relative;
 }
@@ -14,10 +14,25 @@ body {
 }
 
 header {
-    background: #191970;
+    background: #00A499; /* 藍綠色主色 */
     color: white;
     padding: 1em 0;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;; 
+}
+header h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5em;
+    margin: 0;
+    white-space: nowrap;
+}
+header img {
+    height: 60px;
+    margin-right: 1em;
 }
 
 main {
@@ -30,8 +45,8 @@ main {
     background: white;
     padding: 1em;
     margin-bottom: 1em;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* 圓角 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06); /* 陰影 */
 }
 
 .hidden {
@@ -50,18 +65,21 @@ main {
 }
 
 #question-text {
-    font-size: 1em;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 1em;
 }
 
 .option {
-    background-color: #4682b4;
-    border: none;
+    background-color: #e0f3f3; /* 淺色選項背景 */
+    border: 1px solid #b0e0e0; /* 淺色邊框 */
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    color: white;
+    transition: all 0.2s ease-in-out;
+    color: #333;
     width: 100%;
-    height: 3em;
+    height: auto;
+    min-height: 3em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,39 +90,50 @@ main {
 }
 
 .option:hover {
-    background-color: #3672a4;
+    background-color: #c1e7e7;
+    border-color: #90d0d0;
 }
 
 button {
-    background-color: #191970;
+    background-color: #00A499; /* 藍綠色主色 */
     color: white;
     border: none;
     padding: 0.75em 1.5em;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
     display: block;
     margin: 0.75em auto;
+    font-size: 1em;
 }
 
 button:hover {
-    background-color: #0d0d60;
+    background-color: #008080;
 }
 
 footer {
     text-align: center;
     padding: 1em 0;
-    background: #191970;
-    color: white;
+    background: #e0f3f3; /* 淺色footer背景 */
+    color: #333;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+footer img {
+    height: 30px;
 }
 
 .option.selected {
-    background-color: #4caf50;
+    background-color: #0072C6; /* 選中選項顏色 */
     color: white;
+    border-color: #0072C6;
 }
 
 .result-buttons {
@@ -116,24 +145,24 @@ footer {
 
 #retry-btn,
 #job-link-btn {
-    background-color: #191970;
+    background-color: #FFA500; /* 輔助色：橘色 */
     color: white;
     border: none;
     padding: 0.75em 1.5em;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
 }
 
 #retry-btn:hover,
 #job-link-btn:hover {
-    background-color: #0d0d60;
+    background-color: #FF8C00;
 }
 
-/* 手機螢幕 */
 @media screen and (max-width: 600px) {
     #question-text {
-        font-size: 0.9em;
+        font-size: 1em;
     }
 
     .option {
@@ -149,6 +178,16 @@ footer {
     .options {
         grid-template-columns: 1fr;
     }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header h1 {
+        margin-top: 0.5em;
+        font-size: 1.2em;
+    }
 }
 
 #progress-bar {
@@ -162,8 +201,85 @@ footer {
 
 #progress-fill {
     height: 100%;
-    background-color: #4caf50;
+    background-color: #0072C6; /* 進度條顏色 */
     width: 0%;
     transition: width 0.3s ease-in-out;
 }
-    
+
+.badge {
+    display: inline-block;
+    background-color: #0072C6; /* MBTI 類型標籤顏色 */
+    color: white;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    border-radius: 999px;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.result-card {
+    background: white;
+    padding: 2em;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    max-width: 800px;
+    margin: 2em auto;
+    text-align: center;
+}
+
+.job-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1em;
+    margin-top: 1em;
+}
+
+.job-card {
+    background: #f9f9f9;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.job-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.job-card img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px 8px 0 0;
+    display: block;
+    margin-bottom: 0.75em;
+}
+
+.job-card h4 {
+    margin: 0.5em 0;
+    color: #0072C6; /* 職缺標題顏色 */
+    font-size: 1.2em;
+}
+
+.job-card p {
+    font-size: 0.9em;
+    color: #444;
+    line-height: 1.5;
+}
+
+.job-list.columns-1 {
+    grid-template-columns: 1fr;
+}
+
+.job-list.columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.job-list.columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}

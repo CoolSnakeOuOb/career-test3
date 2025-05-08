@@ -8,121 +8,61 @@ const questionText = document.getElementById('question-text');
 const options = document.querySelectorAll('.option');
 const nextBtn = document.getElementById('next-btn');
 const mbtiType = document.getElementById('mbti-type');
-const jobRecommendation = document.getElementById('job-recommendation');
-const jobTitle = document.getElementById('job-title');
-const jobDescription = document.getElementById('job-description');
+const jobList = document.getElementById('job-list');
 const retryBtn = document.getElementById('retry-btn');
 const jobLinkBtn = document.getElementById('job-link-btn');
 
-// 進度條
-const progressBar = document.createElement('div');
-progressBar.id = 'progress-bar';
-const progressFill = document.createElement('div');
-progressFill.id = 'progress-fill';
-progressBar.appendChild(progressFill);
-questionPage.prepend(progressBar)
-
-// 題目資料
+// 題目資料（根據測驗題目new與控制員資訊.xlsx）
 const questions = [
     {
-        text: '你和朋友去參加密室逃脫，輪到你選擇主題時，你會選：',
-        options: [
-            '以破解程式密碼的邏輯性主題',
-            '可享受心跳刺激感的恐怖主題',
-            '需要團隊合作的解謎與角色扮演主題',
-            '考驗組裝和線索連結能力，結構性概念強的密室逃脫主題'
-        ],
-        dimensions: ['T', 'F', 'F', 'T']
+        text: '放假在家，你最可能會',
+        options: ['揪朋友出門逛街玩樂', '窩在家看書或追劇', '試著規劃接下來的行程', '隨心所欲，想到再說'],
+        dimensions: ['E', 'I', 'J', 'P']
     },
     {
-        text: '朋友邀請你參加週末野營活動，你有可能是的回應是：',
-        options: [
-            '好耶！大家一起去最有趣了！',
-            '再看看天氣和活動安排，再決定好了',
-            '很多人嗎？如果有人熟人OK！',
-            '馬上問有幾台車？露營區怎麼去？我來規劃！'
-        ],
-        dimensions: ['E', 'I', 'I', 'E']
+        text: '面對一個全新任務，你會先：',
+        options: ['想像整體畫面與可能結果', '找人討論做法再開始', '照SOP一步步執行', '做中學，邊試邊調整'],
+        dimensions: ['N', 'E', 'S', 'P']
     },
     {
-        text: '你參加一場大型比賽，主辦單位流程很混亂，你會：',
-        options: [
-            '自己找資訊解決問題，不想浪費時間',
-            '幫忙其他人一起找到方向並安撫情緒',
-            '嘗試聯絡工作人員並幫忙現場引導秩序',
-            '先觀察其他人怎麼做，再決定要不要管'
-        ],
-        dimensions: ['T', 'F', 'J', 'P']
+        text: '朋友遲到 30 分鐘，你：',
+        options: ['已經傳訊問情況了', '還在滑手機，沒太在意', '想是不是出什麼意外了', '把這次當作以後調整安排的參考'],
+        dimensions: ['J', 'P', 'F', 'T']
     },
     {
-        text: '你收到兩項任務，一個是整理資料，一個是設計海報，你會：',
-        options: [
-            '先完成資料整理，循序漸進處理',
-            '先做有趣的海報再看資料',
-            '同時處理兩件事，邊做邊切換',
-            '規劃時間分段處理，每件事都照流程走'
-        ],
-        dimensions: ['J', 'P', 'P', 'J']
-    },
-     {
-        text: '朋友約你最近在忙什麼，你會：',
-        options: [
-            '詳細分享在做的事情進度和數據分析',
-            '講自己遇到的趣事或與人互動經歷',
-            '快速總結近況然後問對方',
-            '開始分享自己所忙的事情具有何種發展潛力'
-        ],
-        dimensions: ['T', 'F', 'F', 'N']
+        text: '買東西時你偏好：',
+        options: ['快速決定，信直覺', '做功課比價選最實用的', '照口碑推薦買', '自己分析優缺點選擇'],
+        dimensions: ['N', 'S', 'F', 'T']
     },
     {
-        text: '你比較相信：',
-        options: [
-            '已掌握的資訊和證據',
-            '自己的直覺和整體感覺',
-            '他人過往的實際經驗與做法',
-            '自己腦中的新構想'
-        ],
-        dimensions: ['S', 'N', 'S', 'N']
+        text: '聚會結束後，你通常：',
+        options: ['滿滿能量，想續攤！', '累到只想快點回家安靜一下', '回想當天細節慢慢咀嚼', '忽然靈感爆發想寫個心得'],
+        dimensions: ['E', 'I', 'S', 'N']
     },
     {
-        text: '假如你要設計一款APP，你會：',
-        options: [
-            '思考功能架構、使用流程與技術邏輯',
-            '著重使用者體驗與畫面美感',
-            '以團隊討論為主，傾聽各方意見',
-            '自己默默試做後再邀請他人測試'
-        ],
-        dimensions: ['T', 'F', 'F', 'T']
+        text: '要跟陌生人合作，你會：',
+        options: ['主動破冰建立關係', '等對方先開口再說', '關心對方感受，先拉近距離', '聚焦任務內容，效率第一'],
+        dimensions: ['E', 'I', 'F', 'T']
     },
     {
-        text: '如果今天行程突然改變，你會怎麼反應？',
-        options: [
-            '有點不安，但會馬上擬定新計畫',
-            '覺得開心，獲得可自由安排的空檔',
-            '先觀望再決定要不要行動',
-            '詢問原因並思考如何補回原訂影響的行程'
-        ],
-        dimensions: ['J', 'P', 'P', 'J']
+        text: '朋友最常說你：',
+        options: ['想很多、喜歡提問', '很細心、注意細節', '組織力強、很有規劃', '隨和靈活、能變通'],
+        dimensions: ['N', 'S', 'J', 'P']
     },
     {
-        text: '在一個陌生的社交場合裡，你會：',
-        options: [
-            '主動認識新朋友，打開話題',
-            '先找個安靜角落觀察',
-            '跟熟人混在一起就好',
-            '幫忙遞水或協助他人聯繫主辦單位'
-        ],
-        dimensions: ['E', 'I', 'I', 'E']
+        text: '面對一堆選擇時你會：',
+        options: ['立刻鎖定幾個選項評估', '很難決定，拖到最後一刻', '很難決定，拖到最後一刻', '分析利弊條列比較'],
+        dimensions: ['J', 'P', 'P', 'T']
     },
     {
-        text: '你喜歡的工作氛圍是：',
-        options: [
-            '程序清晰、分工精準的團隊',
-            '自由變化、彈性高的工作節奏',
-            '可常常與人互動的環境',
-            '安靜、有獨立思考時間的空間'
-        ],
-        dimensions: ['J', 'P', 'E', 'I']
+        text: '你在團體中通常是：',
+        options: ['氣氛推手、帶動大家', '安靜觀察、適時補位', '提出點子讓大家發散思考', '把天馬行空的點子拉回現實'],
+        dimensions: ['E', 'I', 'N', 'S']
+    },
+    {
+        text: '最貼近你的描述是：',
+        options: ['計劃派，愛掌控節奏', '自然派，愛自由變動', '情感派，重視人際感受', '邏輯派，重視效率與準確'],
+        dimensions: ['J', 'P', 'F', 'T']
     }
 ];
 
@@ -136,9 +76,8 @@ startBtn.addEventListener('click', () => {
 });
 
 function updateProgressBar() {
-    const percent = ((currentQuestionIndex + 1) / questions.length) * 100;
-
-    progressFill.style.width = `${percent}%`;
+    const percent = ((currentQuestionIndex) / questions.length) * 100;
+    document.getElementById('progress-fill').style.width = `${percent}%`;
 }
 
 function showQuestion() {
@@ -147,12 +86,13 @@ function showQuestion() {
     updateOptions();
     nextBtn.classList.add('hidden');
     nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? '看結果' : '下一題';
+    updateProgressBar();
 }
 
 function updateOptions() {
     options.forEach((option, index) => {
         option.textContent = questions[currentQuestionIndex].options[index];
-        option.onclick = () => selectAnswer(index); // ✅ 用 onclick 取代 addEventListener 累積問題
+        option.onclick = () => selectAnswer(index);
         option.classList.remove('selected');
     });
 }
@@ -168,7 +108,6 @@ nextBtn.addEventListener('click', () => {
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
         showQuestion();
-        updateProgressBar();  // ← 要加這一行！
     } else {
         showResult();
     }
@@ -178,8 +117,9 @@ function showResult() {
     questionPage.classList.add('hidden');
     resultPage.classList.remove('hidden');
     const calculatedMBTI = calculateMBTI();
-    mbtiType.textContent = calculatedMBTI;
+    mbtiType.innerHTML = `<span class="badge">${calculatedMBTI}</span>`;
     recommendJob(calculatedMBTI);
+    document.getElementById('progress-fill').style.width = '100%';
 }
 
 function calculateMBTI() {
@@ -195,48 +135,231 @@ function calculateMBTI() {
 
 // 推薦職缺
 function recommendJob(mbti) {
-    let recommendedJob = {
-        title: '未找到適合職缺',
-        description: '根據您的測驗結果，目前沒有特別推薦的職缺。'
-    };
-
-    // 職缺資料庫 (你需要根據你的資料來修改)
     const jobDatabase = {
-        'ESTJ': { title: '事務員', description: '你擅長組織、注重效率，能在有條理的環境中發揮所長。' },
-        'ESFJ': { title: '事務員', description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力。' },
-        'ISFJ': { title: '事務員/輕軌司機員', description: '你重視細節、做事謹慎，喜歡有規範、有步驟的工作環境。' },
-        'ISTJ': { title: '輕軌司機員/車電技術員/工務技術員', description: '你責任感強、專注力高、冷靜、守規範。' },
-        'ISTP': { title: '輕軌司機員/工務技術員', description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。' },
-        'INTJ': { title: '車電技術員', description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。' },
-        'INTP': { title: '車電技術員', description: '你具有獨立思考和解決問題的能力，擅長分析和理解複雜的系統。' },
-
-        // 剩餘的 MBTI 類型，根據其特質分配職務
-        'ESTP': { title: '事務員', description: '你充滿活力、適應力強，善於在快節奏的環境中工作。' },
-        'ESFP': { title: '事務員', description: '你熱情開朗、享受與人互動，能在服務崗位上發光發熱。' },
-        'ENFJ': { title: '事務員', description: '你善於激勵他人、具有領導才能，能在團隊中發揮影響力。' },
-        'ENFP': { title: '事務員', description: '你充滿創意、善於溝通，能在多元化的工作內容中找到樂趣。' },
-        'ISTJ': { title: '輕軌司機員', description: '你重視細節、做事謹慎，喜歡有規範、有步驟的工作環境。' },
-        'ISFP': { title: '輕軌司機員', description: '你溫和體貼、注重實際，能在穩定且有條理的環境中貢獻。' },
-        'ENTJ': { title: '車電技術員', description: '你具有策略性思維、善於分析，能在複雜的技術挑戰中展現才華。' },
-        'ENTP': { title: '車電技術員', description: '你思維敏捷、善於創新，能在技術開發和問題解決中找到樂趣。' },
-        'INFJ': { title: '事務員', description: '你具有洞察力、關心他人，能在需要同理心和理解的工作中發揮所長。' },
-        'INFP': { title: '事務員', description: '你理想主義、善於表達，能在需要創意和溝通的環境中找到滿足感。' }
-
+        'ISTJ': {
+            jobs: [
+                {
+                    title: '輕軌司機員',
+                    type: '謹慎穩健型',
+                    description: '你重視細節、做事謹慎，喜歡有規範、有步驟的工作環境。在面對突發事件時也能保持冷靜，照程序處理。<br><br>👉 推薦職缺：輕軌司機員。你適合執行標準化流程並維護列車安全，是乘客信賴的穩定力量。',
+                    icon: 'images/train.jpg'
+                },
+                {
+                    title: '車電類技術員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：車電類技術員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/circuit.jpg'
+                },
+                {
+                    title: '工務類技術員',
+                    type: '實作效率型',
+                    description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。面對實體設備與故障狀況特別有解決能力。<br><br>👉 推薦職缺：工務類技術員。你會在路線與建設的世界裡發光發熱，適合動手修繕、維修結構，維持城市的運轉節奏。',
+                    icon: 'images/tools.jpg'
+                }
+            ]
+        },
+        'ISFJ': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：控制員。你的溫暖與細心，是系統運作順暢的關鍵推手。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ESTJ': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '實作效率型',
+                    description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。<br><br>👉 推薦職缺：控制員。你會在系統監控的世界裡發光發熱，維持運轉節奏。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '工務類技術員',
+                    type: '實作效率型',
+                    description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。面對實體設備與故障狀況特別有解決能力。<br><br>👉 推薦職缺：工務類技術員。你會在路線與建設的世界裡發光發熱，適合動手修繕、維修結構，維持城市的運轉節奏。',
+                    icon: 'images/tools.jpg'
+                }
+            ]
+        },
+        'ESFJ': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：控制員。你的溫暖與細心，是系統運作順暢的關鍵推手。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ISTP': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '實作效率型',
+                    description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。<br><br>👉 推薦職缺：控制員。你會在系統監控的世界裡發光發熱，維持運轉節奏。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '工務類技術員',
+                    type: '實作效率型',
+                    description: '你講求效率與實作導向，喜歡有邏輯、有系統的操作環境。面對實體設備與故障狀況特別有解決能力。<br><br>👉 推薦職缺：工務類技術員。你會在路線與建設的世界裡發光發熱，適合動手修繕、維修結構，維持城市的運轉節奏。',
+                    icon: 'images/tools.jpg'
+                }
+            ]
+        },
+        'INTJ': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：控制員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '車電類技術員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：車電類技術員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/circuit.jpg'
+                }
+            ]
+        },
+        'ENTJ': {
+            jobs: [
+                {
+                    title: '控制員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：控制員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/controller.jpg'
+                },
+                {
+                    title: '車電類技術員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：車電類技術員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/circuit.jpg'
+                }
+            ]
+        },
+        'INTP': {
+            jobs: [
+                {
+                    title: '車電類技術員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉 推薦職缺：車電類技術員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/circuit.jpg'
+                }
+            ]
+        },
+        'ESFP': {
+            jobs: [
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ENFJ': {
+            jobs: [
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ENFP': {
+            jobs: [
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'INFP': {
+            jobs: [
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ISFP': {
+            jobs: [
+                {
+                    title: '輕軌司機員',
+                    type: '謹慎穩健型',
+                    description: '你重視細節、做事謹慎，喜歡有規範、有步驟的工作環境。在面對突發事件時也能保持冷靜，照程序處理。<br><br>👉 推薦職缺：輕軌司機員。你適合執行標準化流程並維護列車安全，是乘客信賴的穩定力量。',
+                    icon: 'images/train.jpg'
+                }
+            ]
+        },
+        'INFJ': {
+            jobs: [
+                {
+                    title: '事務員',
+                    type: '服務協調型',
+                    description: '你擅長關心他人、處理人際溝通，具備良好的組織能力與現場應變能力，對於維持現場秩序有天賦。<br><br>👉 推薦職缺：事務員。你的溫暖與細心，是旅客安心的關鍵推手，能讓車站營運順暢又人性化。',
+                    icon: 'images/service.jpg'
+                }
+            ]
+        },
+        'ENTP': {
+            jobs: [
+                {
+                    title: '車電類技術員',
+                    type: '系統解構型',
+                    description: '你擁有敏銳的邏輯分析與系統規劃能力，擅長在複雜資訊中找出規律、創造解決方案。<br><br>👉推薦職缺：車電技術員。你能熟練掌握中央監控、通訊與維修流程，是高科技系統中最可靠的腦袋與雙手。',
+                    icon: 'images/circuit.jpg'
+                }
+            ]
+        }
     };
 
-    if (jobDatabase[mbti]) {
-        recommendedJob = jobDatabase[mbti];
-    }
-
-    jobTitle.textContent = recommendedJob.title;
-    jobDescription.textContent = recommendedJob.description;
+    const recommendedJobs = jobDatabase[mbti].jobs;
+    jobList.innerHTML = '';
+    // 根據職缺數調整 class
+    jobList.className = 'job-list';
+    jobList.classList.add(`columns-${recommendedJobs.length}`);
+    recommendedJobs.forEach((job, index) => {
+        const jobCard = document.createElement('div');
+        jobCard.className = 'job-card';
+        jobCard.innerHTML = `
+            <img src="${job.icon}" alt="${job.title}">
+            <h4>${job.title}</h4>
+            <p><strong>${job.type}</strong></p>
+            <p>${job.description}</p>
+        `;
+        jobList.appendChild(jobCard);
+        setTimeout(() => jobCard.classList.add('show'), index * 100);
+    });
 }
 
 // 再次測驗
 retryBtn.addEventListener('click', () => {
     resultPage.classList.add('hidden');
     startPage.classList.remove('hidden');
-    progressFill.style.width = '0%';
+    document.getElementById('progress-fill').style.width = '0%';
     questionNumber.textContent = '';
     questionText.textContent = '';
     currentQuestionIndex = 0;
@@ -244,11 +367,12 @@ retryBtn.addEventListener('click', () => {
     nextBtn.classList.remove('hidden');
 });
 
+// 職缺連結
 jobLinkBtn.addEventListener('click', () => {
-    alert('此處應連結到相關職缺頁面');
+    alert('請前往公司官方網站查看控制員、事務員、輕軌司機員、車電技術員、工務技術員或技術顧問的詳細資訊！');
 });
 
-
+// 標題換行處理
 function wrapTitle(titleElement, maxWidth) {
     if (window.innerWidth <= maxWidth) {
         let titleText = titleElement.textContent;
@@ -259,13 +383,10 @@ function wrapTitle(titleElement, maxWidth) {
             titleElement.innerHTML = newTitle;
         }
     } else {
-        titleElement.innerHTML = titleElement.textContent; // 恢復原始標題
+        titleElement.innerHTML = titleElement.textContent;
     }
 }
 
-let title = document.querySelector('header h1'); // 你的標題元素
-wrapTitle(title, 600); // 在手機螢幕寬度下執行
-
-window.addEventListener('resize', function() {
-    wrapTitle(title, 600); // 在視窗大小改變時重新執行
-});
+let title = document.querySelector('header h1');
+wrapTitle(title, 600);
+window.addEventListener('resize', () => wrapTitle(title, 600));
